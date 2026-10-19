@@ -1,0 +1,51 @@
+import re
+
+# Paste your log results between the triple quotes below:
+log_data = """
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:1 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:0 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:1 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:2 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:2 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:3 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:4 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:1 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:5 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:6 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:7 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:8 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:9 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:10 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:1 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:11 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:12 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:13 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:14 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:15 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:16 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:17 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:18 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:1 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:19 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:20 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:21 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:22 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:23 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:24 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:25 WINNER:R
+ROUNDS:8 R_MISC:2 R_INT:0 B_MISC:0 B_INT:1 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:26 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:27 WINNER:R
+ROUNDS:8 R_MISC:0 R_INT:0 B_MISC:0 B_INT:3 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:28 WINNER:R
+ROUNDS:8 R_MISC:1 R_INT:0 B_MISC:0 B_INT:0 ENCRYPTOR_R:AIDecryptoEncryptor DECRYPTOR_R:AIDecryptoDecryptor ENCRYPTOR_B:AIDecryptoEncryptor DECRYPTOR_B:AIDecryptoDecryptor SEED:29 WINNER:R
+"""
+
+def extract_separate_blocks(raw_text: str) -> None:
+    r_misc_list = re.findall(r'R_MISC:(\d+)', raw_text)
+    b_int_list = re.findall(r'B_INT:(\d+)', raw_text)
+    
+    if not r_misc_list or not b_int_list:
+        print("No matching entries found.")
+        return
+
+    print("Misc")
+    print("\n".join(r_misc_list))
+    print("\nInt")
+    print("\n".join(b_int_list))
+
+if __name__ == "__main__":
+    extract_separate_blocks(log_data)
